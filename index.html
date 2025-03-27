@@ -3,14 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Запись в барбершоп</title>
+    <title>BARBERSHOP</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --tg-theme-bg-color: #ffffff;
-            --tg-theme-text-color: #000000;
-            --tg-theme-button-color: #2481cc;
-            --tg-theme-button-text-color: #ffffff;
+            --tg-theme-bg-color: #1a1a1a;
+            --tg-theme-text-color: #ffffff;
+            --tg-theme-button-color: #c6a87d;
+            --tg-theme-button-text-color: #1a1a1a;
+            --accent-color: #c6a87d;
+            --border-radius: 12px;
         }
 
         body {
@@ -19,6 +22,7 @@
             padding: 20px;
             background-color: var(--tg-theme-bg-color);
             color: var(--tg-theme-text-color);
+            line-height: 1.6;
         }
 
         .container {
@@ -28,88 +32,109 @@
 
         .header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            position: relative;
         }
 
         .header h1 {
-            font-size: 24px;
+            font-size: 32px;
             margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--accent-color);
+        }
+
+        .header::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 2px;
+            background-color: var(--accent-color);
+            margin: 20px auto;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+            color: var(--accent-color);
         }
 
         select, input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: var(--tg-theme-bg-color);
+            padding: 16px;
+            border: 1px solid rgba(198, 168, 125, 0.2);
+            border-radius: var(--border-radius);
+            background-color: rgba(198, 168, 125, 0.1);
             color: var(--tg-theme-text-color);
             font-size: 16px;
             margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            background-color: rgba(198, 168, 125, 0.15);
         }
 
         .time-slots {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 10px;
+            gap: 12px;
+            margin-top: 15px;
         }
 
         .time-slot {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            padding: 12px;
+            border: 1px solid rgba(198, 168, 125, 0.2);
+            border-radius: var(--border-radius);
             text-align: center;
             cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .time-slot:hover {
+            border-color: var(--accent-color);
+            background-color: rgba(198, 168, 125, 0.1);
         }
 
         .time-slot.selected {
-            background-color: var(--tg-theme-button-color);
+            background-color: var(--accent-color);
             color: var(--tg-theme-button-text-color);
-            border-color: var(--tg-theme-button-color);
-        }
-
-        .time-slot.disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .submit-button {
-            background-color: var(--tg-theme-button-color);
-            color: var(--tg-theme-button-text-color);
-            border: none;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-size: 16px;
-            width: 100%;
-            cursor: pointer;
-            margin-top: 20px;
+            border-color: var(--accent-color);
         }
 
         .service-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 10px;
+            padding: 20px;
+            border: 1px solid rgba(198, 168, 125, 0.2);
+            border-radius: var(--border-radius);
+            margin-bottom: 12px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: rgba(198, 168, 125, 0.1);
+        }
+
+        .service-item:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
         }
 
         .service-item.selected {
-            background-color: var(--tg-theme-button-color);
+            background-color: var(--accent-color);
             color: var(--tg-theme-button-text-color);
-            border-color: var(--tg-theme-button-color);
+            border-color: var(--accent-color);
         }
 
         .service-info {
@@ -117,48 +142,86 @@
         }
 
         .service-name {
-            font-weight: 500;
+            font-weight: 600;
             margin-bottom: 5px;
+            font-size: 18px;
         }
 
-        .service-duration, .service-price {
+        .service-duration {
             font-size: 14px;
-            color: #666;
+            opacity: 0.8;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
-        .service-item.selected .service-duration,
+        .service-duration i {
+            font-size: 12px;
+        }
+
+        .service-price {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--accent-color);
+        }
+
         .service-item.selected .service-price {
             color: var(--tg-theme-button-text-color);
+        }
+
+        .submit-button {
+            background-color: var(--accent-color);
+            color: var(--tg-theme-button-text-color);
+            border: none;
+            padding: 18px 30px;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .submit-button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Запись в барбершоп</h1>
+            <h1>Barbershop</h1>
         </div>
 
         <div class="form-group">
-            <label>Выберите услугу:</label>
+            <label>Выберите услугу</label>
             <div id="services">
                 <div class="service-item" onclick="selectService(this, 'Мужская стрижка', 60, 1000)">
                     <div class="service-info">
                         <div class="service-name">Мужская стрижка</div>
-                        <div class="service-duration">60 минут</div>
+                        <div class="service-duration"><i class="fas fa-clock"></i> 60 минут</div>
                     </div>
                     <div class="service-price">1000 ₽</div>
                 </div>
                 <div class="service-item" onclick="selectService(this, 'Стрижка машинкой', 30, 700)">
                     <div class="service-info">
                         <div class="service-name">Стрижка машинкой</div>
-                        <div class="service-duration">30 минут</div>
+                        <div class="service-duration"><i class="fas fa-clock"></i> 30 минут</div>
                     </div>
                     <div class="service-price">700 ₽</div>
                 </div>
                 <div class="service-item" onclick="selectService(this, 'Стрижка бороды', 30, 800)">
                     <div class="service-info">
                         <div class="service-name">Стрижка бороды</div>
-                        <div class="service-duration">30 минут</div>
+                        <div class="service-duration"><i class="fas fa-clock"></i> 30 минут</div>
                     </div>
                     <div class="service-price">800 ₽</div>
                 </div>
@@ -166,7 +229,7 @@
         </div>
 
         <div class="form-group">
-            <label>Выберите мастера:</label>
+            <label>Выберите мастера</label>
             <select id="barber" onchange="updateTimeSlots()">
                 <option value="">Выберите мастера</option>
                 <option value="Александр">Александр</option>
@@ -176,12 +239,12 @@
         </div>
 
         <div class="form-group">
-            <label>Выберите дату:</label>
+            <label>Выберите дату</label>
             <input type="date" id="date" onchange="updateTimeSlots()" min="">
         </div>
 
         <div class="form-group">
-            <label>Доступное время:</label>
+            <label>Доступное время</label>
             <div class="time-slots" id="timeSlots">
                 <!-- Временные слоты будут добавлены через JavaScript -->
             </div>
@@ -193,6 +256,11 @@
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
+        tg.MainButton.setParams({
+            text: 'ЗАПИСАТЬСЯ',
+            color: '#c6a87d',
+            text_color: '#1a1a1a'
+        });
 
         // Инициализация переменных для хранения выбранных данных
         let selectedService = null;
@@ -216,6 +284,7 @@
             };
             
             updateTimeSlots();
+            checkFormCompletion();
         }
 
         function updateTimeSlots() {
@@ -227,10 +296,10 @@
 
             if (!barber || !date || !selectedService) return;
 
-            // Генерация временных слотов (в реальном приложении здесь будет запрос к серверу)
+            // Генерация временных слотов
             const startHour = 10;
             const endHour = 20;
-            const interval = 30; // минуты
+            const interval = 30;
 
             for (let hour = startHour; hour < endHour; hour++) {
                 for (let minute = 0; minute < 60; minute += interval) {
@@ -242,6 +311,7 @@
                     timeSlotsContainer.appendChild(slot);
                 }
             }
+            checkFormCompletion();
         }
 
         function selectTimeSlot(element, time) {
@@ -250,6 +320,18 @@
             });
             element.classList.add('selected');
             selectedTime = time;
+            checkFormCompletion();
+        }
+
+        function checkFormCompletion() {
+            const barber = document.getElementById('barber').value;
+            const date = document.getElementById('date').value;
+
+            if (selectedService && barber && date && selectedTime) {
+                tg.MainButton.show();
+            } else {
+                tg.MainButton.hide();
+            }
         }
 
         function submitForm() {
@@ -272,6 +354,9 @@
             tg.sendData(JSON.stringify(bookingData));
             tg.close();
         }
+
+        // Привязываем MainButton к отправке формы
+        tg.MainButton.onClick(submitForm);
     </script>
 </body>
 </html> 
