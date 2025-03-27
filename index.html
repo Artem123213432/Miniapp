@@ -6,6 +6,10 @@
     <title>BARBERSHOP</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/dark.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ru.js"></script>
     <style>
         :root {
             --tg-theme-bg-color: #1a1a1a;
@@ -193,6 +197,84 @@
         .submit-button:active {
             transform: translateY(0);
         }
+
+        /* Стили для календаря */
+        .flatpickr-calendar {
+            background: var(--tg-theme-bg-color) !important;
+            border: 1px solid var(--accent-color) !important;
+            border-radius: var(--border-radius) !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
+        }
+
+        .flatpickr-day {
+            color: var(--tg-theme-text-color) !important;
+            border-radius: var(--border-radius) !important;
+        }
+
+        .flatpickr-day.selected {
+            background: var(--accent-color) !important;
+            border-color: var(--accent-color) !important;
+            color: var(--tg-theme-button-text-color) !important;
+        }
+
+        .flatpickr-day:hover {
+            background: rgba(198, 168, 125, 0.2) !important;
+        }
+
+        .flatpickr-months .flatpickr-month {
+            color: var(--accent-color) !important;
+        }
+
+        .flatpickr-current-month .flatpickr-monthDropdown-months {
+            color: var(--accent-color) !important;
+        }
+
+        .flatpickr-weekday {
+            color: var(--accent-color) !important;
+        }
+
+        /* Анимации для элементов */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .service-item {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .time-slot {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Улучшенные стили для выпадающего списка */
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' fill='%23c6a87d'%3E%3Cpath d='M6 8L2 4h8z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+
+        /* Улучшенные стили для input */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            display: none;
+        }
+
+        input[type="date"] {
+            cursor: pointer;
+        }
+
+        /* Добавляем плавные переходы */
+        .form-group {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .form-group:nth-child(2) { animation-delay: 0.1s; }
+        .form-group:nth-child(3) { animation-delay: 0.2s; }
+        .form-group:nth-child(4) { animation-delay: 0.3s; }
     </style>
 </head>
 <body>
@@ -357,6 +439,18 @@
 
         // Привязываем MainButton к отправке формы
         tg.MainButton.onClick(submitForm);
+
+        // Инициализация Flatpickr
+        flatpickr("#date", {
+            locale: "ru",
+            dateFormat: "Y-m-d",
+            minDate: "today",
+            disableMobile: true,
+            theme: "dark",
+            onChange: function(selectedDates, dateStr, instance) {
+                updateTimeSlots();
+            }
+        });
     </script>
 </body>
 </html> 
